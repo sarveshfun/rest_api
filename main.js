@@ -13,27 +13,24 @@ connect();
 
 app.use(cors());
 
-app.get("/", async (req, res) => {
-    try{
-  const movies = await movie_models.find({});
-  res.json(movies);
-    }
-    catch(error){
-        res.send(error)
-
-    }
+app.get("/movieslist", async (req, res) => {
+  try {
+    const movies = await movie_models.find({});
+    res.json(movies);
+  } catch (error) {
+    res.send(error);
+  }
 });
 
-app.post("/", async (req, res) => {
-  console.log(req.body);
+app.post("/movieslist/movie", async (req, res) => {
   const movie = new movie_models({
     name: req.body.name,
     img: req.body.img,
     summary: req.body.summary,
   });
-  res.status(200).json({
+  res.status(201).json({
     success: true,
-    data: {},
+    data: "Done",
     message: "data updated!",
   });
   try {
@@ -44,30 +41,28 @@ app.post("/", async (req, res) => {
   }
 });
 
-app.put("/", async (req, res) => {
+app.put("/movieslist/:movie_id", async (req, res) => {
   try {
-   console.log(req.body);
-    const id = req.query.id;
-   const update = req.body;
+  
+    const id = req.params.movie_id;
+    console.log(id)
+    const update = req.body;
 
-    await movie_models.updateOne({ _id: mongoose.Types.ObjectId(id) }, update, {
-      upsert: true,
-   });
-   res.json({ success: true });
+    await movie_models.findByIdAndUpdate({ _id: id }, update
+      
+    );
+    res.json({ success: true });
   } catch (error) {
     console.log(error);
   }
 });
 
-
-
-
-app.delete("/:id", async (req, res) => {
-
+app.delete("/movieslist/:movie_id", async (req, res) => {
   try {
-    await movie_models.findByIdAndDelete(req.params.id);
-    res.status(204);
-  } catch {
+    await movie_models.findByIdAndDelete(req.params.movie_id);
+
+    res.json({sucess:true})
+  } catch (error){
     console.log(error);
   }
 });

@@ -1,5 +1,3 @@
-
-
 const mongoose = require('mongoose');
  mongoose.connection.once("open",()=>{
    console.log("mongo")
